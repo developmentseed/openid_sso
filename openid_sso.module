@@ -60,13 +60,35 @@ function openid_sso_menu_alter(&$items) {
 
 /**
  * Implementation of hook_form_alter().
- *
- * Redirect user to front page after login, otherwise she will be pushed to OP
- * when using the login/direct form.
  */
 function openid_sso_form_alter(&$form, $form_state, $form_id) {
-  if ($form_id == 'user_login') {
-    $form['#redirect'] = '';
+  switch ($form_id) {
+    // Redirect user to front page after login, otherwise she will be pushed to
+    // OP when using the login/direct form.
+    case 'user_login':
+      $form['#redirect'] = '';
+      break;
+    // Don't allow the user to login using the login block. Direct her to OP
+    // instead.
+    case 'user_login_block':
+      // Remove all child elements.
+      foreach (element_children($form) as $key) {
+        unset($form[$key]);
+      }
+      $form['#action'] = url('user');
+      $form['#validate'] = array();
+      if ($provider = variable_get('openid_sso_provider', array())) {
+        $form['message'] = array(
+          '#type' => 'item',
+          '#value' => t('Login using @provider_name as your OpenID provider.', array('@provider_name' => $provider['name'])),
+        );
+        $form['submit'] = array(
+          '#type' => 'submit',
+          '#value' => t('Login'),
+          '#submit' => array('openid_sso_user_login_submit'),
+        );
+      }
+      break;
   }
 }
 
