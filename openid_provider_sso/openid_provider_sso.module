@@ -27,6 +27,11 @@ function openid_provider_sso_help($path) {
  */
 function openid_provider_sso_menu() {
   $items = array();
+  $items['sso/user'] = array(
+    'page callback' => 'openid_provider_sso_user_page',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
   $items['sso/trusted-sites'] = array(
     'page callback' => 'openid_provider_sso_relying_parties_opml',
     'access callback' => TRUE,
@@ -318,4 +323,23 @@ function openid_provider_sso_relying_parties_opml() {
 
   drupal_set_header('Content-Type=text/x-opml');
   print $output;
+}
+
+/**
+ * Page callback for a user specified by openid identity argument.
+ * The full openid identifier must be specified in the query string under the
+ * 'identifier' key.
+ */
+function openid_provider_sso_user_page() {
+  if (isset($_GET['identifier'])) {
+    global $base_url;
+    $matches = array();
+    $url_escaped = str_replace("/", "\/", "{$base_url}/user/([0-9]*)/identity");
+    preg_match("/{$url_escaped}/", $_GET['identifier'], $matches);
+    if (isset($matches[1]) && is_numeric($matches[1]) && $uid = $matches[1]) {
+      drupal_goto("user/{$uid}");
+    }
+  }
+  drupal_not_found();
+  exit;
 }
