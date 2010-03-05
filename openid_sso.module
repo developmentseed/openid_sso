@@ -153,6 +153,13 @@ function openid_sso_settings() {
 }
 
 /**
+ * Guarantee a trailing slash.
+ */
+function openid_sso_settings_validate($form, &$form_state) {
+  $form_state['values']['openid_sso_provider']['url'] = trim($form_state['values']['openid_sso_provider']['url'], '/') .'/';
+}
+
+/**
  * Request authentication.
  */
 function openid_sso_request() {
