@@ -189,3 +189,4 @@ function openid_sso_logout() {
   // Load the anonymous user
   $user = drupal_anonymous_user();
 }
+
