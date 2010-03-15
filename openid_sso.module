@@ -93,6 +93,24 @@ function openid_sso_form_alter(&$form, $form_state, $form_id) {
 }
 
 /**
+ * Implementation of hook_requirements().
+ */
+function openid_sso_requirements($phase) {
+  $requirements = array();
+  if ($phase == 'runtime') {
+    $requirements['bcmath']['title'] = t('BC Math');
+    if (extension_loaded('bcmath')) {
+      $requirements['bcmath']['description'] = t('The !bcmath PHP extension is present.', array('!bcmath' => l('BC Math', 'http://www.php.net/manual/en/book.bc.php')));
+    }
+    else {
+      $requirements['bcmath']['description'] = t('The !bcmath PHP extension is missing. OpenID Simple Sign-On is not working.', array('!bcmath' => l('BC Math', 'http://www.php.net/manual/en/book.bc.php')));
+      $requirements['bcmath']['severity'] = REQUIREMENT_ERROR;
+    }
+  }
+  return $requirements;
+}
+
+/**
  * Page callback for initiating an authentication request. Logs out user before
  * initiation.
  *
