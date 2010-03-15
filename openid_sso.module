@@ -37,7 +37,7 @@ function openid_sso_menu() {
     'access callback' => TRUE,
     'type' => MENU_CALLBACK,
   );
-  $items['admin/settings/openid-sso'] = array(
+  $items['admin/user/openid-sso'] = array(
     'title' => 'OpenID Simple Sign-On',
     'description' => 'Configure a designated OpenID provider for simplified OpenID-based sign-on.',
     'page callback' => 'drupal_get_form',
