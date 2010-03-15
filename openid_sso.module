@@ -164,9 +164,10 @@ function openid_sso_settings_validate($form, &$form_state) {
  */
 function openid_sso_request() {
   $provider = variable_get('openid_sso_provider', array());
+  $front = drupal_get_normal_path(variable_get('site_frontpage', 'node'));
   $values = array(
     'openid_identifier' => $provider['url'],
-    'openid.return_to' => url('openid/authenticate', array('absolute' => TRUE, 'query' => 'destination=')),
+    'openid.return_to' => url('openid/authenticate', array('absolute' => TRUE, 'query' => "destination=$front")),
   );
   openid_begin($values['openid_identifier'], $values['openid.return_to'], $values);
 }
