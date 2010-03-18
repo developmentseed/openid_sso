@@ -32,7 +32,7 @@ Installation
 
 Install this module and dependencies.
 
-Go to admin/settings/openid-sso and enter a trusted OpenID Provider. The
+Go to admin/user/openid-sso and enter a trusted OpenID Provider. The
 Provider must be a Drupal site with the module OpenID Provider SSO enabled and
 configured.
 
@@ -42,3 +42,7 @@ Name: The Hub
 URL: http://thehub.com/
 
 Note that the URL requires a trailing slash.
+
+Go to admin/user/settings and set "Public Registrations" to "Visitors can create
+accounts and no administrator approval is required." and uncheck "Require e-mail
+verification when a visitor creates an account."

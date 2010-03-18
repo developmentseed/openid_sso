@@ -6,19 +6,6 @@
  */
 
 /**
- * Implementation of hook_strongarm().
- */
-function openid_sso_strongarm() {
-  return array (
-    // No email verification as users can only sign in from trusted provider.
-    'user_email_verification' => 0,
-    // We must allow user registration otherwise OpenID will refuse to register
-    // user. We will suppress user/register in hook_menu_alter().
-    'user_register' => '1',
-  );
-}
-
-/**
  * Implementation of hook_menu().
  */
 function openid_sso_menu() {
