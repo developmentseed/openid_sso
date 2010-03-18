@@ -40,8 +40,11 @@ function openid_sso_menu() {
  * Implementation of hook_menu_alter().
  */
 function openid_sso_menu_alter(&$items) {
-  $items['user/register']['page callback'] = 'openid_sso_user_page';
   $items['user']['page callback'] = 'openid_sso_user_page';
+  $items['user/register']['page callback'] = 'openid_sso_user_page';
+  $items['user/password']['page callback'] = 'openid_sso_user_page';
+  $items['user/%user_category/edit']['access callback'] = 'openid_sso_user_edit_access';
+  $items['user/%user_uid_optional']['page callback'] = 'openid_sso_user_view';
   $items['logout']['page callback'] = 'openid_sso_logout_page';
 }
 
@@ -97,6 +100,39 @@ function openid_sso_requirements($phase) {
   return $requirements;
 }
 
+/**
+ * Custom access callback, only allow users with 'administer users' permissions
+ * to edit a user on relying party. Redirect all other users.
+ */
+function openid_sso_user_edit_access($uid) {
+  if (user_access('administer users')) {
+    return TRUE;
+  }
+  return user_page();
+}
+
+/**
+ * Custom user callback, redirect to OP.
+ */
+function openid_sso_user_view($account) {
+  $provider = variable_get('openid_sso_provider', array());
+
+  // Retrieve the user's openid and pass it to the OP to correctly show her
+  // user account on the hub. We use a LIKE condition here to ensure that the
+  // identifier retrieved matches the hub.
+  if (isset($provider['url'])) {
+    $identifier = db_result(db_query("SELECT authname FROM {authmap} WHERE module='openid' AND uid=%d AND authname LIKE '%s%%'", $account->uid, $provider['url']));
+  }
+
+  // Do not redirect to provider if identifier is set - in that case we just
+  // came back from the provider.
+  if (!empty($identifier) && $provider['url'] && !isset($_GET['identifier'])) {
+    drupal_goto($provider['url'] .'sso/user', array('identifier' => $identifier));
+  }
+  else {
+    drupal_goto('');
+  }
+}
 /**
  * Page callback for initiating an authentication request. Logs out user before
  * initiation.
