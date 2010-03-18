@@ -6,6 +6,16 @@
  */
 
 /**
+ * Implementation of hook_enable().
+ */
+function openid_sso_enable() {
+  // Email verification not necessary with SSO.
+  variable_set('user_email_verification', 0);
+  // Allow unmoderated registration of new users.
+  varable_set('user_register', 1);
+}
+
+/**
  * Implementation of hook_menu().
  */
 function openid_sso_menu() {
