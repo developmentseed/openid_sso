@@ -108,6 +108,7 @@ function openid_sso_user_edit_access($uid) {
   if (user_access('administer users')) {
     return TRUE;
   }
+  module_load_include('inc', 'user', 'user.pages');
   return user_page();
 }
 
