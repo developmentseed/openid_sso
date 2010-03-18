@@ -12,7 +12,7 @@ function openid_sso_enable() {
   // Email verification not necessary with SSO.
   variable_set('user_email_verification', 0);
   // Allow unmoderated registration of new users.
-  varable_set('user_register', 1);
+  variable_set('user_register', 1);
 }
 
 /**
@@ -105,6 +105,16 @@ function openid_sso_requirements($phase) {
     else {
       $requirements['bcmath']['description'] = t('The !bcmath PHP extension is missing. OpenID Simple Sign-On is not working.', array('!bcmath' => l('BC Math', 'http://www.php.net/manual/en/book.bc.php')));
       $requirements['bcmath']['severity'] = REQUIREMENT_ERROR;
+    }
+    if (variable_get('user_email_verification', 1) != 0) {
+      $requirements['user_email_verification']['title'] = t('OpenID SSO');
+      $requirements['user_email_verification']['description'] = t('User registration must not require email verification. !settings.', array('!settings' => l(t('Configure user settings'), 'admin/user/settings', array('query' => 'destination='. $_GET['q']))));
+      $requirements['user_email_verification']['severity'] = REQUIREMENT_ERROR;
+    }
+    if (variable_get('user_register', 0) != 1) {
+      $requirements['user_register']['title'] = t('OpenID SSO');
+      $requirements['user_register']['description'] = t('User registration must be open. !settings.', array('!settings' => l(t('Configure user settings'), 'admin/user/settings', array('query' => 'destination='. $_GET['q']))));
+      $requirements['user_register']['severity'] = REQUIREMENT_ERROR;
     }
   }
   return $requirements;
