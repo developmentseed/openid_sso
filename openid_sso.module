@@ -71,6 +71,12 @@ function openid_sso_form_alter(&$form, $form_state, $form_id) {
     // Don't allow the user to login using the login block. Direct her to OP
     // instead.
     case 'user_login_block':
+      // Show a modal message when user clicks on log in (there may be a wait).
+      $path = drupal_get_path('module', 'openid_sso');
+      drupal_add_js(array('openid_sso_wait_message' => t('Please wait...')), 'setting');
+      drupal_add_css("$path/openid_sso.css");
+      drupal_add_js("$path/jquery.blockUI.js");
+      drupal_add_js("$path/openid_sso.js");
       // Remove all child elements.
       foreach (element_children($form) as $key) {
         unset($form[$key]);
@@ -86,6 +92,7 @@ function openid_sso_form_alter(&$form, $form_state, $form_id) {
           '#type' => 'submit',
           '#value' => t('Login'),
           '#submit' => array('openid_sso_user_login_submit'),
+          '#attributes' => array('class' => 'login-submit'),
         );
       }
       break;

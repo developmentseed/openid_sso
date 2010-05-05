@@ -1,0 +1,5 @@
+
+/* Make font size on block UI msg a bit larger. */
+.blockUI.blockMsg.blockPage {
+  font-size:18px;
+  }
